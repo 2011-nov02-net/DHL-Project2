@@ -32,6 +32,7 @@ jobs:
   
   - task: SonarCloudPrepare@1
     displayName: Prepare for SonarCloud
+    continueOnError: True
     inputs:
       SonarCloud: 'SonarCloud Project 2'
       organization: '2011-nov02-net'
@@ -54,6 +55,7 @@ jobs:
   
   - task: SonarCloudAnalyze@1
     displayName: Analyze on Sonarcloud
+    continueOnError: True
 
   - task: DotNetCoreCLI@2
     displayName: Test
@@ -64,6 +66,7 @@ jobs:
 
   - task: SonarCloudPublish@1
     displayName: Publish SonarCloud Results
+    continueOnError: True
   
   - task: PublishBuildArtifacts@1
     displayName: Publish Artifact
