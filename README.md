@@ -8,3 +8,5 @@ The Github repo for 2011 Revature Training Project 2
 [![Deployment Status](https://vsrm.dev.azure.com/2011-Revature-Project2/_apis/public/Release/badge/0ca1e1e0-6d85-4309-8693-a63578c346e0/1/1)](https://dev.azure.com/2011-Revature-Project2/2011-Revature-Project2/_releaseProgress?_a=release-pipeline-progress&releaseId=1)
 
 [Project_2_Proposal.gdoc](https://docs.google.com/document/d/1SUtmGZhvOQ8VzlGmNKQhKBRXFrF6DCC7mK_G612JgCM/edit?usp=sharing)
+
+[DHL-Project2-DB-Design.drawio](https://drive.google.com/file/d/1vbZ_E7XsWTnbINBwabt1uGdYjkSsvt09/view?usp=sharing)
