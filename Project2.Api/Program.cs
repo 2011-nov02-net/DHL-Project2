@@ -18,9 +18,7 @@ namespace Project2.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                .ConfigureLogging(logging => logging.AddSimpleConsole() )
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>() );
     }
 }
