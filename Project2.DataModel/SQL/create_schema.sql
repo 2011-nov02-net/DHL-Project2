@@ -1,3 +1,5 @@
+-- based of the diageam: https://drive.google.com/file/d/1vbZ_E7XsWTnbINBwabt1uGdYjkSsvt09/view
+
 -- Create a new database called 'Project2'
 -- Connect to the 'master' database to run this snippet
 USE master
