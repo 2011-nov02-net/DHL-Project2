@@ -15,7 +15,7 @@ variables:
 # Set up the name of each run and what it triggers on
 name: $(date:yyyyMMdd)$(rev:.r)
 trigger:
-- main
+- master
 
 # Define stages
 stages:
