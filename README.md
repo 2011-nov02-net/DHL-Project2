@@ -11,4 +11,4 @@ The Github repo for 2011 Revature Training Project 2
 
 [DHL-Project2-DB-Design.drawio](https://drive.google.com/file/d/1vbZ_E7XsWTnbINBwabt1uGdYjkSsvt09/view?usp=sharing)
 
-<iframe width="560" height="315" src='https://dbdiagram.io/embed/5fd67b429a6c525a03bae5d2'> </iframe>
+[project2-db-diagram2(harelfishbein)](https://dbdiagram.io/d/5fd67b429a6c525a03bae5d2)
