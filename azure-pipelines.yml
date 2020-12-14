@@ -138,3 +138,10 @@ stages:
         PathtoPublish: '$(build.artifactstagingdirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Azure subscription 1 (3385faf4-311a-4eab-851a-775463f9a467)'
+        appType: 'webApp'
+        WebAppName: 'DHL-Project2-Service-API'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
