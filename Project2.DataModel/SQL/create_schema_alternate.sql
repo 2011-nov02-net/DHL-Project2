@@ -112,7 +112,7 @@ DROP TABLE IF EXISTS [waitlist]
 CREATE TABLE [waitlist] (
   [user] guid FOREIGN KEY REFERENCES [users]([id]) ,
   [course] int FOREIGN KEY REFERENCES [courses]([id]),
-  [position] int NOT NULL,
+  [added] datetime NOT NULL DEFAULT GETDATE(),
   PRIMARY KEY ([user], [course])
 )
 GO
@@ -126,6 +126,8 @@ CREATE TABLE [assistants] (
 GO
 
 -- Add more complicated check constraints 
+--
+-- 
 
 CREATE VIEW [Enrolled_Count] AS
 select [course], count(*) as [num_enrolled] from [enrollment] group by [course];
@@ -139,7 +141,22 @@ END;
 
 -- the number enrolled in the class is no more than its capacity
 ALTER TABLE [course]
-with ADD CONSTRAINT [Mx_capacity] 
-CHECK ([capacity] <= count_enrolled([id]))
+ADD CONSTRAINT [Mx_capacity] 
+CHECK ([capacity] <= count_enrolled([id]));
 
--- waitlist sequence queue impmlementation.
+
+
+CREATE VIEW [Waitlisted_Count] AS
+select [course], count(*) as [num_waitlisted] from [waitlist] group by [course];
+
+CREATE FUNCTION count_waitlisted ( @courseId int ) RETURNS int AS
+BEGIN
+    return (select (top 1) [num_waitlisted] 
+            from [Waitlisted_Count] 
+            where @courseId = [course] )
+END;
+
+-- the number waitlisted in the class is no more than its waitlist capacity
+ALTER TABLE [waitlist]
+ADD CONSTRAINT [Mx_waitlist_capacity] 
+CHECK ([waitlist_capacity] <= count_waitlisted([id]));
