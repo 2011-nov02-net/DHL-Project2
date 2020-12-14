@@ -3,17 +3,73 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+variables:
+- name: buildConfiguration
+  value: 'Development' # change to 'Release' later
+- name: BuildParameters.RestoreBuildProjects
+  value: '**/*.csproj'
+- name: BuildParameters.TestProjects
+  value: '**/*Tests/*.csproj'
+
+name: $(date:yyyyMMdd)$(rev:.r)
 trigger:
 - main
 
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+jobs:
+- job: Build_and_Analyze
+  displayName: Agent Job 1 - Build
+  timeoutInMinutes: 0
+  steps:
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: '5.x'
+      includePreviewVersions: true
+  
+  - task: SonarCloudPrepare@1
+    displayName: Prepare for SonarCloud
+    continueOnError: True
+    inputs:
+      SonarCloud: 'SonarCloud Project 2'
+      organization: '2011-nov02-net'
+      scannerMode: 'MSBuild'
+      projectKey: '2011-nov02-net_DHL-Project2'
+      projectName: 'DHL-Project2'
+  
+  - task: DotNetCoreCLI@2
+    displayName: Dotnet Restore
+    inputs: 
+      command: restore
+      projects: $(BuildParameters.RestoreBuildProjects)
+  
+  - task: DotNetCoreCLI@2
+    displayName: Dotnet Build
+    inputs:
+      command: build
+      projects: '$(BuildParameters.RestoreBuildProjects)'
+      arguments: '--configuration $(BuildConfiguration)'
+  
+  - task: SonarCloudAnalyze@1
+    displayName: Analyze on Sonarcloud
+    continueOnError: True
+
+  - task: DotNetCoreCLI@2
+    displayName: Test
+    inputs:
+      command: test
+      projects: $(BuildParameters.TestProjects)
+      arguments: --configuration $(BuildConfiguration)
+
+  - task: SonarCloudPublish@1
+    displayName: Publish SonarCloud Results
+    continueOnError: True
+  
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Artifact
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
