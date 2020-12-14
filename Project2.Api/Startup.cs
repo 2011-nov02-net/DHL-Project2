@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Project2.DataModel;
 
 namespace Project2.Api
 {
