@@ -16,8 +16,10 @@ namespace Project2.Api.Controllers
     {
         private readonly ILogger<PersonController> _logger;
         private readonly DbSet<Person> _personRepository;
+        private readonly DHLProject2SchoolContext _context;
         public PersonController(ILogger<PersonController> logger, DHLProject2SchoolContext context)
         {
+            _context = context;
             _personRepository = context.People;
             _logger = logger;
         }
@@ -39,7 +41,9 @@ namespace Project2.Api.Controllers
             try 
             {
                 var person = new Person {Name = name, Email = email, Role = role }; 
-                return Ok(await _personRepository.AddAsync(person) );
+                await _personRepository.AddAsync(person);
+                _context.SaveChanges();
+                return Ok();
             }
             catch (Exception e)
             {
