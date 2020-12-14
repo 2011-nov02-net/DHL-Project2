@@ -16,9 +16,9 @@ namespace Project2.Api.Controllers
     {
         private readonly ILogger<DepartmentController> _logger;
         private readonly DbSet<Department> _departmentRepository;
-        public DepartmentController(ILogger<DepartmentController> logger, DbSet<Department> departmentRepository)
+        public DepartmentController(ILogger<DepartmentController> logger, DHLProject2SchoolContext context)
         {
-            _departmentRepository = departmentRepository;
+            _departmentRepository = context.Departments;
             _logger = logger;
         }
 
