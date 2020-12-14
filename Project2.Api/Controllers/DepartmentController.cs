@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-//using Project2.Api.Models;
+using Project2.DataModel;
 
 namespace Project2.Api.Controllers
 {
