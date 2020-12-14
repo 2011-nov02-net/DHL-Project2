@@ -6,4 +6,7 @@ namespace Project2.DataModel
     public class Class1
     {
     }
+    class Entity<PkT> {
+        PkT Id {get; set;}
+    }
 }
