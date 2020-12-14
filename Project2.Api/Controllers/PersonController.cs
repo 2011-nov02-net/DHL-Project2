@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
+using Project2.DataModel;
 
 namespace Project2.Api.Controllers
 {
@@ -16,9 +17,11 @@ namespace Project2.Api.Controllers
     {
         private readonly ILogger<PersonController> _logger;
         private readonly DbSet<Person> _personRepository;
-        public PersonController(ILogger<PersonController> logger, DbSet<Person> personRepository)
+        private readonly DHLProject2SchoolContext _context;
+        public PersonController(ILogger<PersonController> logger, DHLProject2SchoolContext context)
         {
-            _personRepository = personRepository;
+            _context = context;
+            _personRepository = context.People;
             _logger = logger;
         }
         [HttpGet]
@@ -39,7 +42,9 @@ namespace Project2.Api.Controllers
             try 
             {
                 var person = new Person {Name = name, Email = email, Role = role }; 
-                return Ok(await _personRepository.AddAsync(person) );
+                await _personRepository.AddAsync(person);
+                _context.SaveChanges();
+                return Ok();
             }
             catch (Exception e)
             {
