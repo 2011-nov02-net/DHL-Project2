@@ -101,5 +101,27 @@ namespace Project2.Api.Controllers
             }
             return NotFound();
         }
+        [HttpPost("{id}/courses/{courseId}")]
+        public async Task<IActionResult> UpdatePersonCourse(int id, int courseId)
+        {
+            try
+            {
+                if (await _personRepository
+                    .Include(p => p.Enrollments).ThenInclude(e => e.Course)
+                    .FirstOrDefaultAsync(person => person.Id == id) 
+                    is Person person)
+                {
+                    person.Enrollments.Add(new Enrollment { CourseId = courseId});
+                    _personRepository.Update(person);
+                    return Ok();
+                }
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to create person.");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError); 
+            }
+        }
     }
 }
