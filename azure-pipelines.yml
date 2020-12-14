@@ -64,7 +64,8 @@ stages:
   jobs:
   - job: Testing
 
-    pool: 'ubuntu-latest'
+    pool: 
+      vmImage: 'ubuntu-latest'
     
     steps:
     # To keep sonar cloud happy, prepare it in .NET 2.x
