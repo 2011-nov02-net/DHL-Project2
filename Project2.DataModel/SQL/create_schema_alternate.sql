@@ -160,3 +160,18 @@ END;
 ALTER TABLE [waitlist]
 ADD CONSTRAINT [Mx_waitlist_capacity] 
 CHECK ([waitlist_capacity] <= count_waitlisted([id]));
+
+-- calculate waitlist positions
+CREATE VIEW [waitlist_order] AS
+select ROW_NUMBER() OVER(PARTITION BY [course] ORDER BY [added] ASC) AS [position], [user], [course]
+FROM [waitlist]
+
+-- remove from waitlist and place into course
+CREATE PROCEDURE [Dequeue_waitlist] @courseId int, @userId int out AS 
+BEGIN ATOMIC 
+SET @userId = SELECT [user] FROM [waitlist_order] 
+  WHERE [course] = @courseId AND [position] = 1;
+DELETE FROM [waitlist_order] WHERE [course] = @courseId AND [position] = 1;
+INSERT INTO [enrollment] ([user], [course]) VALUES (@userId, @courseId);
+END;
+-- TODO: add trigger for delete from enrollment
