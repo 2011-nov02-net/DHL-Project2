@@ -125,3 +125,15 @@ stages:
       continueOnError: True
       inputs:
         pollingTimeoutSec: '300'
+
+- stage: Publish
+  jobs:
+  - job: Publish 
+    pool: 
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Artifact
+      inputs:
+        PathtoPublish: $(build.artifactstagingdirectory)
+        TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)' 
