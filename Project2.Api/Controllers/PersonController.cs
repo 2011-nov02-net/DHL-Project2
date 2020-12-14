@@ -16,9 +16,9 @@ namespace Project2.Api.Controllers
     {
         private readonly ILogger<PersonController> _logger;
         private readonly DbSet<Person> _personRepository;
-        public PersonController(ILogger<PersonController> logger, DbSet<Person> personRepository)
+        public PersonController(ILogger<PersonController> logger, DHLProject2SchoolContext context)
         {
-            _personRepository = personRepository;
+            _personRepository = context.People;
             _logger = logger;
         }
         [HttpGet]
