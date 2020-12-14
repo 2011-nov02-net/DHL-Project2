@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Project2\Project2.csproj" />
+    <ProjectReference Include="..\Project2.DataModel\Project2.DataModel.csproj" />
   </ItemGroup>
 
   <ItemGroup>
