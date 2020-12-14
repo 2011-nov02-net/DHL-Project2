@@ -175,3 +175,4 @@ DELETE FROM [waitlist_order] WHERE [course] = @courseId AND [position] = 1;
 INSERT INTO [enrollment] ([user], [course]) VALUES (@userId, @courseId);
 END;
 -- TODO: add trigger for delete from enrollment
+-- TDOD: check if error hanling is needed for procs
