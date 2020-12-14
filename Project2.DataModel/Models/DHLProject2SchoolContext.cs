@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace Project2.Api
+namespace Project2.DataModel
 {
     public partial class DHLProject2SchoolContext : DbContext
     {
