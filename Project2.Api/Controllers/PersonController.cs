@@ -48,7 +48,7 @@ namespace Project2.Api.Controllers
             }
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPerson(int id, Person person)
+        public async Task<IActionResult> UpdatePerson(int id, Person person)
         {
             try
             {
@@ -88,6 +88,18 @@ namespace Project2.Api.Controllers
             }
             return NotFound();
         }
-        
+        [HttpGet("{id}/transcript")]
+        public async Task<IActionResult> GetPersonTranscript(int id)
+        {
+            if (await _personRepository
+                .Include(p => p.Transcripts).ThenInclude(e => e.Course)
+                .FirstOrDefaultAsync(person => person.Id == id) 
+                is Person person)
+            {
+                var courses = person.Enrollments.Select(x => x.Course).AsQueryable().ToListAsync();
+                return Ok(await courses);
+            }
+            return NotFound();
+        }
     }
 }
