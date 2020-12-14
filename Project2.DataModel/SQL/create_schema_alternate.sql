@@ -58,7 +58,7 @@ CREATE TABLE [courses] (
   [session] int FOREIGN KEY REFERENCES [sessions]([id]) ON DELETE CASCADE,
   [category] int FOREIGN KEY REFERENCES [categories]([id]),
   [primary] int FOREIGN KEY REFERENCES [courses]([id]) ON DELETE CASCADE, -- THIS IS THE PARENT CLASS OF GROUP CLASSES LIKE THE LECTURE FOR A DISCUSSION
-  [optional] bool NOT NULL DEFAULT (false),
+  [optional] bit NOT NULL DEFAULT (false),
   [capacity] int NOT NULL,
   [waitlist_capacity] int NOT NULL
 )
@@ -124,3 +124,22 @@ CREATE TABLE [assistants] (
   PRIMARY KEY ([assistant], [course])
 )
 GO
+
+-- Add more complicated check constraints 
+
+CREATE VIEW [Enrolled_Count] AS
+select [course], count(*) as [num_enrolled] from [enrollment] group by [course];
+
+CREATE FUNCTION count_enrolled ( @courseId int ) RETURNS int AS
+BEGIN
+    return (select (top 1) [num_enrolled] 
+            from [Enrolled_Count] 
+            where @courseId = [course] )
+END;
+
+-- the number enrolled in the class is no more than its capacity
+ALTER TABLE [course]
+with ADD CONSTRAINT [Mx_capacity] 
+CHECK ([capacity] <= count_enrolled([id]))
+
+-- waitlist sequence queue impmlementation.
