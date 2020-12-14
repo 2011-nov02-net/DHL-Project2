@@ -135,5 +135,6 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: Publish Artifact
       inputs:
-        PathtoPublish: $(build.artifactstagingdirectory)
-        TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)' 
+        PathtoPublish: '$(build.artifactstagingdirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
