@@ -57,7 +57,9 @@ stages:
       - task: PublishBuildArtifacts@1
         displayName: Publish Artifact
         inputs:
-          PathtoPublish: $(build.artifactstagingdirectory)
+          PathtoPublish: '$(build.artifactstagingdirectory)'
+          ArtifactName: '_2011-nov02-net.DHL-Project2'
+          publishLocation: 'FilePath'
           TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
     
 - stage: SonarCloud
