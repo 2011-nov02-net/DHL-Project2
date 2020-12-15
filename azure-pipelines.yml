@@ -54,6 +54,10 @@ stages:
           arguments: '--configuration $(BuildConfiguration)'
         
       # Publish the artifact
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'publish'
+          publishWebProjects: true
       - task: PublishBuildArtifacts@1
         displayName: Publish Artifact
         inputs:
