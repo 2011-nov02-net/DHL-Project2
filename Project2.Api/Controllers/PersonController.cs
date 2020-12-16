@@ -43,7 +43,7 @@ namespace Project2.Api.Controllers
             {
                 var person = new Person {Name = name, Email = email, Role = role }; 
                 await _personRepository.AddAsync(person);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return Ok();
             }
             catch (Exception e)
@@ -62,6 +62,7 @@ namespace Project2.Api.Controllers
                 oldPerson.Email = person.Email;
                 oldPerson.Role = person.Role;
                 _personRepository.Update(oldPerson);
+                await _context.SaveChangesAsync();
                 return NoContent();
             }
             catch (Exception e)
@@ -76,6 +77,7 @@ namespace Project2.Api.Controllers
             if (await _personRepository.FindAsync(id) is Person person)
             {
                 _personRepository.Remove(person);
+                await _context.SaveChangesAsync();
                 return Ok();
             }
             return NotFound();
@@ -118,6 +120,7 @@ namespace Project2.Api.Controllers
                 {
                     person.Enrollments.Add(new Enrollment { CourseId = courseId});
                     _personRepository.Update(person);
+                    await _context.SaveChangesAsync();
                     return Ok();
                 }
                 return NotFound();
