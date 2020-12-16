@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Project2.DataModel
 {
@@ -14,17 +15,19 @@ namespace Project2.DataModel
     {
         private readonly DHLProject2SchoolContext _context;
         private readonly DbSet<TEntity> _dbSet;
-        public Repository(DHLProject2SchoolContext context, 
-            DbSet<TEntity> dbSet)
+        private readonly IQueryable<TEntity> _included;
+        public Repository(DHLProject2SchoolContext context, DbSet<TEntity> dbSet, 
+            Func<DbSet<TEntity>, IIncludableQueryable<TEntity, object>> includes)
         {
             if (context.Model.FindEntityType(dbSet.EntityType.ClrType) is null)
                 throw new ArgumentException("DbSet does not belong to dbContext");
             _context = context;
             _dbSet = dbSet;
+            _included = includes(dbSet).AsQueryable();
         }
-        public Type ElementType => _dbSet.AsQueryable().ElementType;
-        public Expression Expression => _dbSet.AsQueryable().Expression;
-        public IQueryProvider Provider => _dbSet.AsQueryable().Provider;
+        public Type ElementType => _included.ElementType;
+        public Expression Expression => _included.Expression;
+        public IQueryProvider Provider => _included.Provider;
         public int Count => _dbSet.Count();
         public bool IsReadOnly => false;
         public void Clear() => throw new NotImplementedException();
@@ -55,7 +58,7 @@ namespace Project2.DataModel
     }
     // https://www.c-sharpcorner.com/article/generic-repository-pattern-in-asp-net-core/
     public class Entity<PkT> {
-        PkT Id {get; set;}
+        public PkT Id {get; set;}
     }
     partial class Class : Entity<int> { }
     partial class Person : Entity<int> { }
