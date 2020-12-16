@@ -35,7 +35,7 @@ namespace Project2.DataModel
         public void CopyTo(TEntity[] array, int arrayIndex) => 
             _dbSet.ToArray().CopyTo(array, arrayIndex);
         public IEnumerator<TEntity> GetEnumerator() => 
-            _dbSet.AsEnumerable().GetEnumerator();
+            _included.AsEnumerable().GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public void Add(TEntity item)
         {
