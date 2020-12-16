@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,10 @@ namespace Project2.DataModel
 {
     public interface IRepository<T> : IQueryable<T>, ICollection<T> { 
         public void Update(T item);
+        public ValueTask<T> FindAsync(object keyValue);
+        public ValueTask<bool> AddAsync(T item);
+        public ValueTask<bool> RemoveAsync(T item);
+        public Task<object> UpdateAsync(T item);
     }
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity<int>
     {
@@ -43,17 +48,36 @@ namespace Project2.DataModel
             _context.SaveChanges();
         }
         public bool Remove(TEntity item)
-        {
-            var oldState = _context.Entry(item).State; 
-            var state = _dbSet.Remove(item).State;
+        { 
+            _dbSet.Remove(item);
             _context.SaveChanges();
-            if (oldState != state) return true;
-            else return false;
+            return true;
         }
         public void Update(TEntity item)
         {
             _dbSet.Update(item);
             _context.SaveChanges();
+        }
+        public async ValueTask<TEntity> FindAsync(object keyValue)
+        {
+            return await _dbSet.FindAsync(keyValue);
+        }
+        public async ValueTask<bool> AddAsync(TEntity item)
+        {
+            await _dbSet.AddAsync(item);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async ValueTask<bool> RemoveAsync(TEntity item)
+        {
+            _dbSet.Remove(item);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<object> UpdateAsync(TEntity item)
+        {
+            _dbSet.Update(item);
+            return await _context.SaveChangesAsync();
         }
     }
     // https://www.c-sharpcorner.com/article/generic-repository-pattern-in-asp-net-core/
