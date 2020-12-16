@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Project2.DataModel
 {
-    public interface IRepository<T> : IQueryable<T>, ICollection<T> { }
+    public interface IRepository<T> : IQueryable<T>, ICollection<T> { 
+        public void Update(T item);
+    }
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity<int>
     {
         private readonly DHLProject2SchoolContext _context;
@@ -44,6 +46,11 @@ namespace Project2.DataModel
             _context.SaveChanges();
             if (oldState != state) return true;
             else return false;
+        }
+        public void Update(TEntity item)
+        {
+            _dbSet.Update(item);
+            _context.SaveChanges();
         }
     }
     // https://www.c-sharpcorner.com/article/generic-repository-pattern-in-asp-net-core/
