@@ -25,7 +25,7 @@ namespace Project2.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> GetDepartments()
         {
-            return Ok( await _departmentRepository.ToListAsync() );
+            return Ok(await _departmentRepository.ToListAsync());
         }
 
         [HttpGet("{id}")]
@@ -49,7 +49,7 @@ namespace Project2.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error");
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError); 
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
