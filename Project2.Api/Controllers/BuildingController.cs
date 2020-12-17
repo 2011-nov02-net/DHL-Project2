@@ -49,7 +49,7 @@ namespace Project2.Api.Controllers
         {
             try
             {
-                var building = new Building { BuildingName = name };
+                var building = new Building { Name = name };
 
                 await _buildingRepository.AddAsync(building);
 
@@ -74,7 +74,7 @@ namespace Project2.Api.Controllers
             {
                 var buildingToEdit = await _buildingRepository.FindAsync(id);
 
-                buildingToEdit.BuildingName = building.BuildingName;
+                buildingToEdit.Name = building.Name;
 
                 _buildingRepository.Update(buildingToEdit);
 
@@ -88,7 +88,7 @@ namespace Project2.Api.Controllers
 
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-            
+
         }
 
         // DELETE "api/Building/id"
