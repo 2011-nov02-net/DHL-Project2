@@ -1,6 +1,7 @@
-SELECT *
-FROM Instructor;
+SELECT * FROM Instructor;
 
-INSERT INTO Instructor(DepartmentId, InstructorId) VALUES(9, 1);
-INSERT INTO Instructor(DepartmentId, InstructorId) VALUES(10, 2);
-INSERT INTO Instructor(DepartmentId, InstructorId) VALUES(11, 3);
+SELECT * FROM [User];
+
+SELECT * FROM Course;
+
+INSERT INTO Instructor (InstructorId, CourseId) VALUES (1000, 1), (1001, 7), (1002, 13), (1004, 19)
