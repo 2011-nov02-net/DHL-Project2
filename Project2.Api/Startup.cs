@@ -28,7 +28,7 @@ namespace Project2.Api
         /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DHLProject2SchoolContext>(options => 
+            services.AddDbContext<DHLProject2SchoolContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Project2connection")));
             services.AddControllers();
         }

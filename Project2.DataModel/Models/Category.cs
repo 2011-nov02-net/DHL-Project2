@@ -5,18 +5,16 @@ using System.Collections.Generic;
 
 namespace Project2.DataModel
 {
-    public partial class Department
+    public partial class Category
     {
-        public Department()
+        public Category()
         {
             Courses = new HashSet<Course>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public int? DeanId { get; set; }
 
-        public virtual User Dean { get; set; }
         public virtual ICollection<Course> Courses { get; set; }
     }
 }
