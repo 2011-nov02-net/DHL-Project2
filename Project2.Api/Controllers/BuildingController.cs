@@ -99,6 +99,8 @@ namespace Project2.Api.Controllers
             {
                 _buildingRepository.Remove(building);
 
+                await _context.SaveChangesAsync();
+
                 return Ok();
             }
             return NotFound();
