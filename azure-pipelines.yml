@@ -54,11 +54,26 @@ stages:
           arguments: '--configuration $(BuildConfiguration)'
         
       # Publish the artifact
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'publish'
+          publishWebProjects: true
       - task: PublishBuildArtifacts@1
         displayName: Publish Artifact
         inputs:
-          PathtoPublish: $(build.artifactstagingdirectory)
-          TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
+          PathtoPublish: '$(build.artifactstagingdirectory)'
+          ArtifactName: '_2011-nov02-net.DHL-Project2'
+          publishLocation: 'Container'
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(Pipeline.Workspace)'
+          artifact: '_2011-nov02-net.DHL-Project2'
+          publishLocation: 'pipeline'
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: '_2011-nov02-net.DHL-Project2'
+          targetPath: '$(Pipeline.Workspace)'
     
 - stage: SonarCloud
   jobs:

@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Project2.Api
+namespace Project2.DataModel
 {
     public partial class Enrollment
     {
-        public int CourseId { get; set; }
-        public int StudentId { get; set; }
+        public int User { get; set; }
+        public int Course { get; set; }
+        public int? Grade { get; set; }
 
-        public virtual Class Course { get; set; }
-        public virtual Person Student { get; set; }
+        public virtual Course CourseNavigation { get; set; }
+        public virtual Grade GradeNavigation { get; set; }
+        public virtual User UserNavigation { get; set; }
     }
 }

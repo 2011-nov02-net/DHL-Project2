@@ -5,12 +5,13 @@ using System.Collections.Generic;
 
 namespace Project2.DataModel
 {
-    public partial class Instructor
+    public partial class CourseAssistant
     {
-        public int InstructorId { get; set; }
+        public int AssistantId { get; set; }
         public int CourseId { get; set; }
+        public string Role { get; set; }
 
+        public virtual User Assistant { get; set; }
         public virtual Course Course { get; set; }
-        public virtual User InstructorNavigation { get; set; }
     }
 }
