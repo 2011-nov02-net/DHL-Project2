@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Project2.DataModel;
 
+using Microsoft.EntityFrameworkCore.Query;
+
 namespace Project2.Api
 {
     public class Startup
@@ -30,6 +32,13 @@ namespace Project2.Api
         {
             services.AddDbContext<DHLProject2SchoolContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Project2connection")));
+            services.AddTransient<IRepositoryAsync<User>, Repository<User>>(serviceProvider =>
+                new Repository<User>(
+                    serviceProvider.GetService<DHLProject2SchoolContext>(),
+                    serviceProvider.GetRequiredService<DHLProject2SchoolContext>().Users,
+                    users => users.Include(x => x.Enrollments)
+                )
+            );
             services.AddControllers();
         }
 
