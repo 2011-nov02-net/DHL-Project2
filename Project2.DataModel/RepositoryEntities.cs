@@ -14,14 +14,15 @@ namespace Project2.DataModel
         private readonly DHLProject2SchoolContext _context;
         private readonly DbSet<TEntity> _dbSet;
         private readonly IQueryable<TEntity> _included;
-        public Repository(DHLProject2SchoolContext context, DbSet<TEntity> dbSet, 
+        public Repository(DHLProject2SchoolContext context, 
+            Func<DHLProject2SchoolContext, DbSet<TEntity>> dbSetFactory,
             Func<DbSet<TEntity>, IIncludableQueryable<TEntity, object>> includes)
         {
-            if (context.Model.FindEntityType(dbSet.EntityType.ClrType) is null)
-                throw new ArgumentException("DbSet does not belong to dbContext");
             _context = context;
-            _dbSet = dbSet;
-            _included = includes(dbSet).AsQueryable();
+            _dbSet = dbSetFactory(_context);
+            if (_context.Model.FindEntityType(_dbSet.EntityType.ClrType) is null)
+                throw new ArgumentException("DbSet does not belong to dbContext");
+            _included = includes(_dbSet).AsQueryable();
         }
         public Type ElementType => _included.ElementType;
         public Expression Expression => _included.Expression;

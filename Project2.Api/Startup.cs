@@ -35,8 +35,15 @@ namespace Project2.Api
             services.AddTransient<IRepositoryAsync<User>, Repository<User>>(serviceProvider =>
                 new Repository<User>(
                     serviceProvider.GetService<DHLProject2SchoolContext>(),
-                    serviceProvider.GetRequiredService<DHLProject2SchoolContext>().Users,
+                    context => context.Users,
                     users => users.Include(x => x.Enrollments)
+                )
+            );
+            services.AddTransient<IRepositoryAsync<Course>, Repository<Course>>(serviceProvider =>
+                new Repository<Course>(
+                    serviceProvider.GetService<DHLProject2SchoolContext>(),
+                    context => context.Courses,
+                    users => users.Include(x => x.Enrollments).ThenInclude(x => x.UserNavigation)
                 )
             );
             services.AddControllers();
