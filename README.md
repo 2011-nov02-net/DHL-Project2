@@ -5,7 +5,7 @@ The Github repo for 2011 Revature Training Project 2
 
 [![Build Status](https://dev.azure.com/2011-Revature-Project2/2011-Revature-Project2/_apis/build/status/2011-nov02-net.DHL-Project2?branchName=master)](https://dev.azure.com/2011-Revature-Project2/2011-Revature-Project2/_build/latest?definitionId=2&branchName=master)
 
-[![Deployment Status](https://vsrm.dev.azure.com/2011-Revature-Project2/_apis/public/Release/badge/0ca1e1e0-6d85-4309-8693-a63578c346e0/1/1)](https://dev.azure.com/2011-Revature-Project2/2011-Revature-Project2/_releaseProgress?_a=release-pipeline-progress&releaseId=1)
+[![Deployment Status](https://vsrm.dev.azure.com/2011-Revature-Project2/_apis/public/Release/badge/0ca1e1e0-6d85-4309-8693-a63578c346e0/2/3)](https://dev.azure.com/2011-Revature-Project2/2011-Revature-Project2/_release?view=mine&_a=releases&definitionId=2)
 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=2011-nov02-net_DHL-Project2&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=2011-nov02-net_DHL-Project2)
 
