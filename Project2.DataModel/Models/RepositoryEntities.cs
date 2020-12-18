@@ -1,4 +1,3 @@
-<<<<<<< HEAD:Project2.DataModel/RepositoryEntities.cs
 ﻿using System;
 using System.Threading.Tasks;
 using System.Collections;
@@ -142,5 +141,3 @@ namespace Project2.DataModel
     }
     */
 }
-=======
->>>>>>> master:Project2.DataModel/Models/RepositoryEntities.cs
