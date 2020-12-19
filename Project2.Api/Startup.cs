@@ -47,6 +47,7 @@ namespace Project2.Api
                     users => users.Include(x => x.Enrollments)
                         .ThenInclude(x => x.GradeNavigation)
                         .Include(x => x.Waitlists)
+                        .Include(x => x.Instructors)
                 )
             );
             services.AddTransient<IRepositoryAsync<Department>, Repository<Department>>(serviceProvider =>

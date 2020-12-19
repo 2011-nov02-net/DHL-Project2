@@ -101,7 +101,7 @@ namespace Project2.Api.Controllers
         }
 
         // DELETE "api/Course/id"
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
             if (await _courseRepository.FindAsync(id) is Course courseItem)
@@ -113,5 +113,38 @@ namespace Project2.Api.Controllers
             return NotFound();
         }        
 
+        [HttpGet("instructor/{instructorId}")]
+        public async Task<IActionResult> GetCoursesWithInstructorById(int instructorId)
+        {
+            var courses = await _courseRepository.Where(course => course.Instructors
+                .Select(x => x.InstructorId).Contains(instructorId)).ToListAsync();
+            return Ok(courses);
+        }
+        [HttpGet("{id}/enrollment")]
+        public async Task<IActionResult> GetCourseEnrollmentById(int id)
+        {
+            var course = await _courseRepository.FindAsync(id);
+            var students = course.Enrollments.AsQueryable()
+                .Include(x => x.UserNavigation)
+            .Select(x => x.UserNavigation);
+            return Ok(await students.AsQueryable().ToListAsync());
+        }
+        [HttpPost("{id}/enrollment/{studentId}")]
+        public async Task<IActionResult> EnrollUserInCourseById(int id, int studentId)
+        {
+            var course = await _courseRepository.FindAsync(id);
+            course.Enrollments.Add(new Enrollment { Course = id, User = studentId });
+            await _courseRepository.UpdateAsync(course);
+            return Ok();
+        }
+        [HttpPut("{id}/enrollment/{studentId}")]
+        public async Task<IActionResult> UpdateEnrollment(int id, int studentId, int gradeId)
+        {
+            var course = await _courseRepository.FindAsync(id);
+            var student = await course.Enrollments.AsQueryable().FirstOrDefaultAsync(x => x.User == studentId);
+            student.Grade = gradeId;
+            await _courseRepository.UpdateAsync(course);
+            return Ok();
+        }
     }
 }
