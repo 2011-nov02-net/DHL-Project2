@@ -16,8 +16,6 @@ namespace Project2.Api.Controllers
     {
         private readonly ILogger<CourseController> _logger;
         private readonly IRepositoryAsync<Course> _courseRepository;
-        private readonly DHLProject2SchoolContext _context;
-
         public CourseController(ILogger<CourseController> logger, IRepositoryAsync<Course> courseRepository)
         {
             _logger = logger;
@@ -62,8 +60,6 @@ namespace Project2.Api.Controllers
 
                 await _courseRepository.AddAsync(CourseItem);
 
-                _context.SaveChanges();
-
                 return Ok();
             }
             catch (Exception e)
@@ -92,9 +88,7 @@ namespace Project2.Api.Controllers
                 courseToEdit.Capacity = courseItem.Capacity;
                 courseToEdit.WaitlistCapacity = courseItem.WaitlistCapacity;
 
-                _courseRepository.Update(courseToEdit);
-
-                _context.SaveChanges();
+                await _courseRepository.UpdateAsync(courseToEdit);
 
                 return NoContent();
             }
@@ -112,9 +106,7 @@ namespace Project2.Api.Controllers
         {
             if (await _courseRepository.FindAsync(id) is Course courseItem)
             {
-                _courseRepository.Remove(courseItem);
-
-                await _context.SaveChangesAsync();
+                await _courseRepository.RemoveAsync(courseItem);
 
                 return Ok();
             }

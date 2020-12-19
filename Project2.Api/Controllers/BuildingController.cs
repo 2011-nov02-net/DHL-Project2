@@ -16,8 +16,6 @@ namespace Project2.Api.Controllers
     {
         private readonly ILogger<BuildingController> _logger;
         private readonly IRepositoryAsync<Building> _buildingRepository;
-        private readonly DHLProject2SchoolContext _context;
-
         public BuildingController(ILogger<BuildingController> logger, IRepositoryAsync<Building> buildingRepository)
         {
             _logger = logger;
@@ -52,8 +50,6 @@ namespace Project2.Api.Controllers
 
                 await _buildingRepository.AddAsync(building);
 
-                _context.SaveChanges();
-
                 return Ok();
             }
             catch (Exception e)
@@ -75,9 +71,7 @@ namespace Project2.Api.Controllers
 
                 buildingToEdit.Name = building.Name;
 
-                _buildingRepository.Update(buildingToEdit);
-
-                _context.SaveChanges();
+                await _buildingRepository.UpdateAsync(buildingToEdit);
 
                 return NoContent();
             }
@@ -96,9 +90,7 @@ namespace Project2.Api.Controllers
         {
             if (await _buildingRepository.FindAsync(id) is Building building)
             {
-                _buildingRepository.Remove(building);
-
-                await _context.SaveChangesAsync();
+                await _buildingRepository.RemoveAsync(building);
 
                 return Ok();
             }
