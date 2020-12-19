@@ -15,14 +15,13 @@ namespace Project2.Api.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ILogger<CourseController> _logger;
-        private readonly DbSet<Course> _courseRepository;
+        private readonly IRepositoryAsync<Course> _courseRepository;
         private readonly DHLProject2SchoolContext _context;
 
-        public CourseController(ILogger<CourseController> logger, DHLProject2SchoolContext context)
+        public CourseController(ILogger<CourseController> logger, IRepositoryAsync<Course> courseRepository)
         {
             _logger = logger;
-            _context = context;
-            _courseRepository = context.Courses;
+            _courseRepository = courseRepository;
         }
 
         // GET "api/Course"

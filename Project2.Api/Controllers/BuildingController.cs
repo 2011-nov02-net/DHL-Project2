@@ -15,14 +15,13 @@ namespace Project2.Api.Controllers
     public class BuildingController : ControllerBase
     {
         private readonly ILogger<BuildingController> _logger;
-        private readonly DbSet<Building> _buildingRepository;
+        private readonly IRepositoryAsync<Building> _buildingRepository;
         private readonly DHLProject2SchoolContext _context;
 
-        public BuildingController(ILogger<BuildingController> logger, DHLProject2SchoolContext context)
+        public BuildingController(ILogger<BuildingController> logger, IRepositoryAsync<Building> buildingRepository)
         {
             _logger = logger;
-            _context = context;
-            _buildingRepository = context.Buildings;
+            _buildingRepository = buildingRepository;
         }
 
         // GET "api/Building"

@@ -32,18 +32,42 @@ namespace Project2.Api
         {
             services.AddDbContext<DHLProject2SchoolContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Project2connection")));
+            
             services.AddTransient<IRepositoryAsync<User>, Repository<User>>(serviceProvider =>
                 new Repository<User>(
                     serviceProvider.GetService<DHLProject2SchoolContext>(),
                     context => context.Users,
-                    users => users.Include(x => x.Enrollments)
+                    users => users.Include(x => x.PermissionNavigation)
                 )
             );
             services.AddTransient<IRepositoryAsync<Course>, Repository<Course>>(serviceProvider =>
                 new Repository<Course>(
                     serviceProvider.GetService<DHLProject2SchoolContext>(),
                     context => context.Courses,
-                    users => users.Include(x => x.Enrollments).ThenInclude(x => x.UserNavigation)
+                    users => users.Include(x => x.Enrollments)
+                        .ThenInclude(x => x.GradeNavigation)
+                        .Include(x => x.Waitlists)
+                )
+            );
+            services.AddTransient<IRepositoryAsync<Department>, Repository<Department>>(serviceProvider =>
+                new Repository<Department>(
+                    serviceProvider.GetService<DHLProject2SchoolContext>(),
+                    context => context.Departments,
+                    departments => departments.Include(x => x.Dean)
+                )
+            );
+            services.AddTransient<IRepositoryAsync<Building>, Repository<Building>>(serviceProvider =>
+                new Repository<Building>(
+                    serviceProvider.GetService<DHLProject2SchoolContext>(),
+                    context => context.Buildings,
+                    departments => departments.Include(x => x.Rooms)
+                )
+            );
+            services.AddTransient<IRepositoryAsync<Room>, Repository<Room>>(serviceProvider =>
+                new Repository<Room>(
+                    serviceProvider.GetService<DHLProject2SchoolContext>(),
+                    context => context.Rooms,
+                    departments => departments.Include(x => x.Reservations)
                 )
             );
             services.AddControllers();

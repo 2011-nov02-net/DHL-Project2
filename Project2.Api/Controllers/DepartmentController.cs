@@ -15,10 +15,10 @@ namespace Project2.Api.Controllers
     public class DepartmentController : ControllerBase
     {
         private readonly ILogger<DepartmentController> _logger;
-        private readonly DbSet<Department> _departmentRepository;
-        public DepartmentController(ILogger<DepartmentController> logger, DHLProject2SchoolContext context)
+        private readonly IRepositoryAsync<Department> _departmentRepository;
+        public DepartmentController(ILogger<DepartmentController> logger, IRepositoryAsync<Department> departmentRepository)
         {
-            _departmentRepository = context.Departments;
+            _departmentRepository = departmentRepository;
             _logger = logger;
         }
 
