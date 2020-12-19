@@ -43,6 +43,74 @@ namespace Project2.Api.Controllers
             return NotFound();
         }
 
+        // GET "api/Building/id/room"
+        [HttpGet("{id}/room")]
+        public async Task<IActionResult> GetRoomsByBuildingId(int id)
+        {
+            var buildingRooms = await _context.Rooms.Where(r => r.BuildingId == id).ToListAsync();
+            if (buildingRooms != null)
+            {
+                return Ok(buildingRooms);
+            }
+            return NotFound();
+        }
+
+        // GET "api/building/id/room/roomId"
+        [HttpGet("{id}/room/{roomId}")]
+        public async Task<IActionResult> GetRoomByRoomId(int roomId)
+        {
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == roomId);
+            if (room != null)
+            {
+                return Ok(room);
+            }
+            return NotFound();
+
+        }
+
+        // PUT "api/Building/id/room/roomId"
+        [HttpPut("{id}/room/{roomId}")]
+        public async Task<IActionResult> UpdateBuildingRooms(int roomId, int capacity)
+        {
+            try
+            {
+                var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == roomId);
+                if (room != null)
+                {
+                    //update the room
+                    room.Capacity = capacity;
+                    _context.Update(room);
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                }
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to update building room.");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        // POST "api/Building/id/room"
+        [HttpPost("{id}/room")]
+        public async Task<IActionResult> CreateRoomForBuilding(int buildingId, decimal number, int capacity)
+        {
+            try
+            {
+                var room = new Room { Number = number, Capacity = capacity, BuildingId = buildingId };
+                var building = await _buildingRepository.Where(b => b.Id == buildingId).FirstOrDefaultAsync();
+                building.Rooms.Add(room);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to create room.");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);                    
+            }
+        }
+
         // POST "api/Building"
         [HttpPost]
         public async Task<IActionResult> CreateBuilding(string name)
@@ -53,7 +121,7 @@ namespace Project2.Api.Controllers
 
                 await _buildingRepository.AddAsync(building);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok();
             }
@@ -66,6 +134,7 @@ namespace Project2.Api.Controllers
 
         }
 
+
         // PUT "api/Building/id"
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBuilding(int id, Building building)
@@ -75,10 +144,11 @@ namespace Project2.Api.Controllers
                 var buildingToEdit = await _buildingRepository.FindAsync(id);
 
                 buildingToEdit.Name = building.Name;
+                buildingToEdit.Rooms = building.Rooms;
 
                 _buildingRepository.Update(buildingToEdit);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return NoContent();
             }
@@ -104,6 +174,23 @@ namespace Project2.Api.Controllers
                 return Ok();
             }
             return NotFound();
+        }
+
+        // DELETE "api/Building/id/room/id"
+        [HttpDelete("{id}/Room/{roomId}")]
+        public async Task<IActionResult> DeleteRoomFromBuilding(int id, int roomId)
+        {
+            var buildingRoom = await _context.Rooms.Where(r => r.BuildingId == id).FirstOrDefaultAsync(r => r.Id == roomId);
+            var building = await _buildingRepository.Where(b => b.Id == id).FirstOrDefaultAsync();
+
+            if (building != null && buildingRoom != null)
+            {
+                building.Rooms.Remove(buildingRoom);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return NotFound();
+            
         }
 
 
