@@ -8,7 +8,7 @@ namespace Project2
     { 
         public void Update(T item);
     }
-    public interface IRepositoryAsync<T> : IRepository<T>
+    public interface IRepositoryAsync<T> : IRepository<T>, IAsyncEnumerable<T>
     {
         public ValueTask<T> FindAsync(object keyValue);
         public ValueTask<bool> AddAsync(T item);

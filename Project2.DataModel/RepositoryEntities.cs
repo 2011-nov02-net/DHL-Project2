@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using System.Threading;
 
 namespace Project2.DataModel
 {
@@ -73,5 +74,7 @@ namespace Project2.DataModel
             _dbSet.Update(item);
             return await _context.SaveChangesAsync();
         }
+        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken) => 
+            _dbSet.AsAsyncEnumerable().GetAsyncEnumerator(cancellationToken);
     }
 }
