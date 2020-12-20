@@ -23,13 +23,13 @@ namespace Project2.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetDepartments()
+        public async Task<IActionResult> GetDepartments()
         {
             return Ok(await _departmentRepository.ToListAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Department>> GetDepartmentById(int id)
+        public async Task<IActionResult> GetDepartmentById(int id)
         {
             if (await _departmentRepository.FindAsync(id) is Department department)
             {
@@ -39,7 +39,7 @@ namespace Project2.Api.Controllers
         }
 
         [HttpPost("")]
-        public async Task<ActionResult<Department>> PostDepartment(Department model)
+        public async Task<IActionResult> PostDepartment(Department model)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace Project2.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Department>> DeleteDepartmentById(int id)
+        public async Task<IActionResult> DeleteDepartmentById(int id)
         {
             if (await _departmentRepository.FindAsync(id) is Department department)
             {
