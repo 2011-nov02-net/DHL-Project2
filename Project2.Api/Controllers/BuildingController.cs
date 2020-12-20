@@ -96,7 +96,15 @@ namespace Project2.Api.Controllers
             }
             return NotFound();
         }
-
-
+        // GET "api/Buidling/id/Room"
+        [HttpGet("{id}/Room")]
+        public async Task<IActionResult> GetBuidlingRooms(int id)
+        {
+            if (await _buildingRepository.FindAsync(id) is Building buidling)
+            {
+                return Ok(buidling.Rooms);  
+            }
+            return NotFound();
+        }
     }
 }
