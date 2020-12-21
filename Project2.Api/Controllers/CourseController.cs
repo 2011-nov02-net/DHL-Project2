@@ -111,7 +111,45 @@ namespace Project2.Api.Controllers
                 return Ok();
             }
             return NotFound();
-        }        
+        } 
+        
+        // POST "api/Course/id/instructor"
+        [HttpPost("{courseId}/instructor")]
+        public async Task<IActionResult> AddInstructorForCourse(int courseId, int id)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+                var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
+                var instructor = new Instructor { InstructorId = user.Id, CourseId = course.Id };
+                if (course != null && user != null)
+                {
+                    course.Instructors.Add(instructor);
+                    _context.Update(course);
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                }
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to add instructor to course");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        // GET "api/Course/id/instructor"
+        [HttpGet("{id}/instructor")]
+        public async Task<IActionResult> GetCourseInstructor(int courseId, int instructorId)
+        {
+            var courseInstructor = await _context.Instructors.Where(c => c.CourseId == courseId).FirstOrDefaultAsync();
+
+            if (courseInstructor != null)
+            {
+                return Ok(courseInstructor);
+            }
+            return NotFound();
+        }
 
         [HttpGet("instructor/{instructorId}")]
         public async Task<IActionResult> GetCoursesWithInstructorById(int instructorId)
