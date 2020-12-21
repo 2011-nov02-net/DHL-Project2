@@ -15,14 +15,11 @@ namespace Project2.Api.Controllers
     public class BuildingController : ControllerBase
     {
         private readonly ILogger<BuildingController> _logger;
-        private readonly DbSet<Building> _buildingRepository;
-        private readonly DHLProject2SchoolContext _context;
-
-        public BuildingController(ILogger<BuildingController> logger, DHLProject2SchoolContext context)
+        private readonly IRepositoryAsync<Building> _buildingRepository;
+        public BuildingController(ILogger<BuildingController> logger, IRepositoryAsync<Building> buildingRepository)
         {
             _logger = logger;
-            _context = context;
-            _buildingRepository = context.Buildings;
+            _buildingRepository = buildingRepository;
         }
 
         // GET "api/Building"
@@ -53,8 +50,6 @@ namespace Project2.Api.Controllers
 
                 await _buildingRepository.AddAsync(building);
 
-                _context.SaveChanges();
-
                 return Ok();
             }
             catch (Exception e)
@@ -76,9 +71,7 @@ namespace Project2.Api.Controllers
 
                 buildingToEdit.Name = building.Name;
 
-                _buildingRepository.Update(buildingToEdit);
-
-                _context.SaveChanges();
+                await _buildingRepository.UpdateAsync(buildingToEdit);
 
                 return NoContent();
             }
@@ -97,15 +90,21 @@ namespace Project2.Api.Controllers
         {
             if (await _buildingRepository.FindAsync(id) is Building building)
             {
-                _buildingRepository.Remove(building);
-
-                await _context.SaveChangesAsync();
+                await _buildingRepository.RemoveAsync(building);
 
                 return Ok();
             }
             return NotFound();
         }
-
-
+        // GET "api/Buidling/id/Room"
+        [HttpGet("{id}/Room")]
+        public async Task<IActionResult> GetBuidlingRooms(int id)
+        {
+            if (await _buildingRepository.FindAsync(id) is Building buidling)
+            {
+                return Ok(buidling.Rooms);  
+            }
+            return NotFound();
+        }
     }
 }

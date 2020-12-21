@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Project2.Api\Project2.Api.csproj" />
+    <ProjectReference Include="..\Project2.DataModel\Project2.DataModel.csproj" />
   </ItemGroup>
 
 </Project>
