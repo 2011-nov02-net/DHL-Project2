@@ -15,14 +15,11 @@ namespace Project2.Api.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ILogger<CourseController> _logger;
-        private readonly DbSet<Course> _courseRepository;
-        private readonly DHLProject2SchoolContext _context;
-
-        public CourseController(ILogger<CourseController> logger, DHLProject2SchoolContext context)
+        private readonly IRepositoryAsync<Course> _courseRepository;
+        public CourseController(ILogger<CourseController> logger, IRepositoryAsync<Course> courseRepository)
         {
             _logger = logger;
-            _context = context;
-            _courseRepository = context.Courses;
+            _courseRepository = courseRepository;
         }
 
         // GET "api/Course"
@@ -63,8 +60,6 @@ namespace Project2.Api.Controllers
 
                 await _courseRepository.AddAsync(CourseItem);
 
-                _context.SaveChanges();
-
                 return Ok();
             }
             catch (Exception e)
@@ -93,9 +88,7 @@ namespace Project2.Api.Controllers
                 courseToEdit.Capacity = courseItem.Capacity;
                 courseToEdit.WaitlistCapacity = courseItem.WaitlistCapacity;
 
-                _courseRepository.Update(courseToEdit);
-
-                _context.SaveChanges();
+                await _courseRepository.UpdateAsync(courseToEdit);
 
                 return NoContent();
             }
@@ -108,19 +101,89 @@ namespace Project2.Api.Controllers
         }
 
         // DELETE "api/Course/id"
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
             if (await _courseRepository.FindAsync(id) is Course courseItem)
             {
-                _courseRepository.Remove(courseItem);
-
-                await _context.SaveChangesAsync();
+                await _courseRepository.RemoveAsync(courseItem);
 
                 return Ok();
             }
             return NotFound();
-        }        
+        } 
+        
+        // PUT "api/Course/courseId/instructor/instructorId"
+        [HttpPut("{courseId}/instructor/{instructorId}")]
+        public async Task<IActionResult> AddInstructorForCourse(int courseId, int instructorId)
+        {
+            try
+            {
+                if (await _courseRepository.FindAsync(courseId) is Course course)
+                {
+                    var instructor = new Instructor { 
+                        InstructorId = instructorId, 
+                        CourseId = courseId };
+                    course.Instructors.Add(instructor);
+                    await _courseRepository.UpdateAsync(course);
+                    return Ok();
+                }
+                return NotFound();                
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to add instructor to course");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
 
+        // GET "api/Course/id/instructor"
+        [HttpGet("{id}/instructor")]
+        public async Task<IActionResult> GetCourseInstructors(int id)
+        {
+            if (await _courseRepository
+                .Include(x => x.Instructors).ThenInclude(x => x.InstructorNavigation)
+                .FirstOrDefaultAsync(c => c.Id == id) is Course course)
+            {
+                var instructors = await course.Instructors
+                    .Select(x => x.InstructorNavigation).AsQueryable().ToListAsync();
+                return Ok(instructors);
+            }
+            return NotFound();
+        }
+
+        [HttpGet("instructor/{instructorId}")]
+        public async Task<IActionResult> GetCoursesWithInstructorById(int instructorId)
+        {
+            var courses = await _courseRepository.Where(course => course.Instructors
+                .Select(x => x.InstructorId).Contains(instructorId)).ToListAsync();
+            return Ok(courses);
+        }
+        [HttpGet("{id}/enrollment")]
+        public async Task<IActionResult> GetCourseEnrollmentById(int id)
+        {
+            var course = await _courseRepository.FindAsync(id);
+            var students = course.Enrollments.AsQueryable()
+                .Include(x => x.UserNavigation)
+            .Select(x => x.UserNavigation);
+            return Ok(await students.AsQueryable().ToListAsync());
+        }
+        [HttpPost("{id}/enrollment/{studentId}")]
+        public async Task<IActionResult> EnrollUserInCourseById(int id, int studentId)
+        {
+            var course = await _courseRepository.FindAsync(id);
+            course.Enrollments.Add(new Enrollment { Course = id, User = studentId });
+            await _courseRepository.UpdateAsync(course);
+            return Ok();
+        }
+        [HttpPut("{id}/enrollment/{studentId}")]
+        public async Task<IActionResult> UpdateEnrollment(int id, int studentId, int gradeId)
+        {
+            var course = await _courseRepository.FindAsync(id);
+            var student = await course.Enrollments.AsQueryable().FirstOrDefaultAsync(x => x.User == studentId);
+            student.Grade = gradeId;
+            await _courseRepository.UpdateAsync(course);
+            return Ok();
+        }
     }
 }

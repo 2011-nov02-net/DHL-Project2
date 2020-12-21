@@ -16,12 +16,10 @@ namespace Project2.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
-        private readonly DbSet<User> _userRepository;
-        private readonly DHLProject2SchoolContext _context;
-        public UserController(ILogger<UserController> logger, DHLProject2SchoolContext context)
+        private readonly IRepositoryAsync<User> _userRepository;
+        public UserController(ILogger<UserController> logger, IRepositoryAsync<User> userRepository)
         {
-            _context = context;
-            _userRepository = context.Users;
+            _userRepository = userRepository;
             _logger = logger;
         }
         [HttpGet]
@@ -43,7 +41,6 @@ namespace Project2.Api.Controllers
             {
                 var user = new User { FullName = name, Email = email, Permission = permission };
                 await _userRepository.AddAsync(user);
-                _context.SaveChanges();
                 return Ok();
             }
             catch (Exception e)
@@ -96,10 +93,10 @@ namespace Project2.Api.Controllers
         [HttpGet("{id}/transcript")]
         public async Task<IActionResult> GetUserTranscript(int id)
         {
-            var gradedCourses = await _context.Enrollments.Where(e => e.Grade != null && e.User == id).ToListAsync();
-            if (gradedCourses != null)
+            if (_userRepository.FirstOrDefault(x => x.Id == id) is User user)
             {
-                return Ok(gradedCourses);
+                var gradedCourses = user.Enrollments.Where(x => x.Grade != null);
+                return Ok(await gradedCourses.AsQueryable().ToListAsync());
             }
             return NotFound();
         }
