@@ -3,6 +3,9 @@ using System.Collections.Generic;
 namespace Project2.DataModel
 {
     // https://www.c-sharpcorner.com/article/generic-repository-pattern-in-asp-net-core/
+    /*
+    Dbset requires that any type paramiter be a reference type, so the 
+    */
     public abstract class EntityBase {}
     public interface IEntity<PkT> {
         public PkT Id {get; set;}
