@@ -113,23 +113,22 @@ namespace Project2.Api.Controllers
             return NotFound();
         } 
         
-        // POST "api/Course/id/instructor"
-        [HttpPost("{courseId}/instructor")]
-        public async Task<IActionResult> AddInstructorForCourse(int courseId, int id)
+        // PUT "api/Course/courseId/instructor/instructorId"
+        [HttpPut("{courseId}/instructor/{instructorId}")]
+        public async Task<IActionResult> AddInstructorForCourse(int courseId, int instructorId)
         {
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-                var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
-                var instructor = new Instructor { InstructorId = user.Id, CourseId = course.Id };
-                if (course != null && user != null)
+                if (await _courseRepository.FindAsync(courseId) is Course course)
                 {
+                    var instructor = new Instructor { 
+                        InstructorId = instructorId, 
+                        CourseId = courseId };
                     course.Instructors.Add(instructor);
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    await _courseRepository.UpdateAsync(course);
                     return Ok();
                 }
-                return NotFound();
+                return NotFound();                
             }
             catch (Exception e)
             {
@@ -140,13 +139,15 @@ namespace Project2.Api.Controllers
 
         // GET "api/Course/id/instructor"
         [HttpGet("{id}/instructor")]
-        public async Task<IActionResult> GetCourseInstructor(int courseId, int instructorId)
+        public async Task<IActionResult> GetCourseInstructors(int id)
         {
-            var courseInstructor = await _context.Instructors.Where(c => c.CourseId == courseId).FirstOrDefaultAsync();
-
-            if (courseInstructor != null)
+            if (await _courseRepository
+                .Include(x => x.Instructors).ThenInclude(x => x.InstructorNavigation)
+                .FirstOrDefaultAsync(c => c.Id == id) is Course course)
             {
-                return Ok(courseInstructor);
+                var instructors = await course.Instructors
+                    .Select(x => x.InstructorNavigation).AsQueryable().ToListAsync();
+                return Ok(instructors);
             }
             return NotFound();
         }
