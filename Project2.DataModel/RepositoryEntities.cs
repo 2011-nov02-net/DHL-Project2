@@ -10,11 +10,23 @@ using System.Threading;
 
 namespace Project2.DataModel
 {
+    /*
+    Dbset requires that any type paramiter be a reference type, so the line "TEntity : EntityBase"
+    Satisfies that constraint. But then it requires that the ModelPartials file make the entities inherit from EntityBase
+    most of the code in this class is implementing the IQueriable and Icollection interfaces using the method 
+    that implement those interfaces for dbSet
+    */
     public class Repository<TEntity> : IRepositoryAsync<TEntity> where TEntity : EntityBase
     {
         private readonly DHLProject2SchoolContext _context;
         private readonly DbSet<TEntity> _dbSet;
         private readonly IQueryable<TEntity> _included;
+        /// <summery>
+        /// This constructor allows dependency injection and consistency with DbSet and dbContext
+        /// it takes a context provided by dependency injection and function that gets the dbSet from the context
+        /// then it checks that the dbSet belongs to the dbContext 
+        /// then it provides some default includes with another function
+        /// </summery>
         public Repository(DHLProject2SchoolContext context, 
             Func<DHLProject2SchoolContext, DbSet<TEntity>> dbSetFactory,
             Func<DbSet<TEntity>, IIncludableQueryable<TEntity, object>> includes)
