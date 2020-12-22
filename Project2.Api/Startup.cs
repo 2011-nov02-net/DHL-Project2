@@ -95,6 +95,7 @@ namespace Project2.Api
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors();
             app.UseEndpoints(endpoints => endpoints.MapControllers() );
         }
     }
