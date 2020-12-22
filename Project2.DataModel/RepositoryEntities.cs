@@ -55,7 +55,8 @@ namespace Project2.DataModel
             _context.SaveChanges();
         }
         public bool Remove(TEntity item)
-        { 
+        {
+            if(!_dbSet.Contains(item) ) return false;
             _dbSet.Remove(item);
             _context.SaveChanges();
             return true;
@@ -71,15 +72,21 @@ namespace Project2.DataModel
         }
         public async ValueTask<bool> AddAsync(TEntity item)
         {
-            await _dbSet.AddAsync(item);
-            await _context.SaveChangesAsync();
-            return true;
+            try 
+            {
+                await _dbSet.AddAsync(item);
+                await _context.SaveChangesAsync();
+                return true;
+            } catch(Exception) { return false; }
         }
         public async ValueTask<bool> RemoveAsync(TEntity item)
         {
-            _dbSet.Remove(item);
-            await _context.SaveChangesAsync();
-            return true;
+            try {
+                if(!await _dbSet.ContainsAsync(item) ) return false;
+                _dbSet.Remove(item);
+                await _context.SaveChangesAsync();
+                return true;
+            } catch(Exception) { return false; }
         }
         public async Task<object> UpdateAsync(TEntity item)
         {

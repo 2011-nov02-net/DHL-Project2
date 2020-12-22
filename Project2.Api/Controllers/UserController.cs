@@ -30,9 +30,17 @@ namespace Project2.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            if (await _userRepository.FindAsync(id)
+            try
+            {
+                if (await _userRepository.FindAsync(id)
                     is User user) return Ok(user);
-            return NotFound();
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to create user.");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
         [HttpPost]
         public async Task<IActionResult> CreateUser(string name, string email, int permission)
@@ -40,8 +48,12 @@ namespace Project2.Api.Controllers
             try
             {
                 var user = new User { FullName = name, Email = email, Permission = permission };
-                await _userRepository.AddAsync(user);
-                return Ok();
+                if (await _userRepository.AddAsync(user)) 
+                    return CreatedAtAction( 
+                        actionName: nameof(GetUser),
+                        routeValues: new { user.Id },
+                        value: user);
+                else return NoContent();
             }
             catch (Exception e)
             {
