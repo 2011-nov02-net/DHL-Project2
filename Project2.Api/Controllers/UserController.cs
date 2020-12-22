@@ -34,6 +34,14 @@ namespace Project2.Api.Controllers
                     is User user) return Ok(user);
             return NotFound();
         }
+        [HttpGet("find/{email}")]
+        public async Task<IActionResult> GetUser(string email)
+        {
+            if (await _userRepository.FirstOrDefaultAsync(u => u.Email == email)
+                is User user) return Ok(user);
+            return NotFound();
+
+        }
         [HttpPost]
         public async Task<IActionResult> CreateUser(string name, string email, int permission)
         {
@@ -80,16 +88,15 @@ namespace Project2.Api.Controllers
         [HttpGet("{id}/courses")]
         public async Task<IActionResult> GetUserCourses(int id)
         {
-            if (await _userRepository
-                .Include(p => p.Enrollments).ThenInclude(e => e.Course)
-                .FirstOrDefaultAsync(user => user.Id == id)
-                is User user)
+            var userEnrollment = await _userRepository.Include(u => u.Enrollments).Where(u => u.Id == id).ToListAsync();
+            if (userEnrollment.Count > 0)
             {
-                var courses = user.Enrollments.Select(x => x.Course).AsQueryable().ToListAsync();
-                return Ok(await courses);
+                var enrollments = userEnrollment.First().Enrollments.ToList();
+                if(enrollments.Count > 0)
+                    return Ok(enrollments);
             }
             return NotFound();
-        }
+      }
         [HttpGet("{id}/transcript")]
         public async Task<IActionResult> GetUserTranscript(int id)
         {
