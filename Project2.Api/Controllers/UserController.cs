@@ -38,11 +38,7 @@ namespace Project2.Api.Controllers
         public async Task<IActionResult> GetUser(string email)
         {
             if (await _userRepository.FirstOrDefaultAsync(u => u.Email == email)
-                is User user)
-            {
-                var retUser = await _userRepository.FindAsync(user.Id) as User;
-                return Ok(retUser);
-            }
+                is User user) return Ok(user);
             return NotFound();
 
         }
@@ -100,7 +96,7 @@ namespace Project2.Api.Controllers
                     return Ok(enrollments);
             }
             return NotFound();
-        }
+      }
         [HttpGet("{id}/transcript")]
         public async Task<IActionResult> GetUserTranscript(int id)
         {
