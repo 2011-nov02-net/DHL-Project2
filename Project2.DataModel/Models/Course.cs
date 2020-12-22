@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 #nullable disable
 
@@ -27,13 +28,21 @@ namespace Project2.DataModel
         public int? Capacity { get; set; }
         public int? WaitlistCapacity { get; set; }
 
+        [JsonIgnore]
         public virtual Category CategoryNavigation { get; set; }
+        [JsonIgnore]
         public virtual Department Department { get; set; }
+        [JsonIgnore]
         public virtual Session SessionNavigation { get; set; }
+        [JsonIgnore]
         public virtual ICollection<CourseAssistant> CourseAssistants { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Enrollment> Enrollments { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Instructor> Instructors { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Reservation> Reservations { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Waitlist> Waitlists { get; set; }
     }
 }
