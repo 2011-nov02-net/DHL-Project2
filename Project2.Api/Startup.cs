@@ -78,7 +78,7 @@ namespace Project2.Api
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:4200",
-                                            "https://dhl-project2-service-api.azurewebsites.net")
+                                            "https://dhl-project2-site.azurewebsites.net/")
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials();
