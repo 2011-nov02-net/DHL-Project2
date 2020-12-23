@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Project2.DataModel;
+using System.Collections.Generic;
 
 namespace Project2.Api.Controllers
 {
@@ -17,9 +18,11 @@ namespace Project2.Api.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly IRepositoryAsync<User> _userRepository;
-        public UserController(ILogger<UserController> logger, IRepositoryAsync<User> userRepository)
+        private readonly IRepositoryAsync<Course> _courseRepository;
+        public UserController(ILogger<UserController> logger, IRepositoryAsync<User> userRepository, IRepositoryAsync<Course> courseRepository)
         {
             _userRepository = userRepository;
+            _courseRepository = courseRepository;
             _logger = logger;
         }
         [HttpGet]
@@ -104,8 +107,15 @@ namespace Project2.Api.Controllers
             if (userEnrollment.Count > 0)
             {
                 var enrollments = userEnrollment.First().Enrollments.ToList();
-                if(enrollments.Count > 0)
-                    return Ok(enrollments);
+                if (enrollments.Count > 0)
+                {
+                    var courses = new List<Course>();
+                    foreach (var item in enrollments)
+                    {
+                        courses.Add(await _courseRepository.FirstOrDefaultAsync(c => c.Id == item.Course));
+                    }
+                    return Ok(courses);
+                }
             }
             return NotFound();
       }
