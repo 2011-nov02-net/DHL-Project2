@@ -9,29 +9,28 @@ Course Portal is an application that a school could use for managing everything 
 * C# - version 9.0
 * .NET framework - version 5.0
 * ASP.NET API - version 5.0
-* Angular - 11.0.5
-* Angular Material - 11.0.3
 * T-SQL (Azure SQL) - 15.0.2000.5
 * EntityFramework Core - 5.0
 
 ## Features
 
 List of features ready and TODOs for future development
-* Login by Email to view enrolled courses
-* Enroll in a course
-* Change a user's email and name
-* Create a new user 
+* REST API provided with ASP.NET API
+* Entity Framework Core POCO classes
+* Generic Repository for POCO classes that implements `ICollection` and `IQueryable`
+* Routes that allow CRUD for users, classes, buildings, rooms, departments, enrollments, instructors, and course assistants
+* Database diagram implemented: [project2-db-diagram2](https://dbdiagram.io/d/5fd67b429a6c525a03bae5d2)
 
 To-do list:
 * Okta Authentication Login
-* Add Angular component for instructors assign grades to students
-* Add Angular component for instrctors to enroll a student of the waitlist
+* T-SQL functions and procedure for additional business rules
 
 ## Getting Started
 
 Prerequisites:
 
 [Install .Net](https://docs.microsoft.com/en-us/dotnet/core/install/)
+
 Install Microsoft SQL Server or otherwise get a ADO.NET connection string to a remote SQL Server.
 
 ```
@@ -68,4 +67,4 @@ This project uses the following license: [MIT License](https://opensource.org/li
 
 [DHL-Project2-DB-Design.drawio](https://drive.google.com/file/d/1vbZ_E7XsWTnbINBwabt1uGdYjkSsvt09/view?usp=sharing)
 
-[project2-db-diagram2(harelfishbein)](https://dbdiagram.io/d/5fd67b429a6c525a03bae5d2)
+[project2-db-diagram2](https://dbdiagram.io/d/5fd67b429a6c525a03bae5d2)
