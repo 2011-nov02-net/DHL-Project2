@@ -101,21 +101,16 @@ namespace Project2.Api.Controllers
             return NotFound();
         }
         [HttpGet("{id}/courses")]
-        public async Task<IActionResult> GetUserCourses(int id)
+        public async Task<IActionResult> GetUserEnrolledCourses(int id)
         {
-            var userEnrollment = await _userRepository.Include(u => u.Enrollments).Where(u => u.Id == id).ToListAsync();
-            if (userEnrollment.Count > 0)
+            var userFetch = _userRepository
+                .Include(u => u.Enrollments).ThenInclude(e => e.CourseNavigation)
+                .FirstOrDefaultAsync(u => u.Id == id);
+            if (await userFetch is User user)
             {
-                var enrollments = userEnrollment.First().Enrollments.ToList();
-                if (enrollments.Count > 0)
-                {
-                    var courses = new List<Course>();
-                    foreach (var item in enrollments)
-                    {
-                        courses.Add(await _courseRepository.FirstOrDefaultAsync(c => c.Id == item.Course));
-                    }
-                    return Ok(courses);
-                }
+                var enrolledCourses = user.Enrollments
+                    .Select(e => e.CourseNavigation).ToList();
+                return Ok(enrolledCourses);
             }
             return NotFound();
       }
