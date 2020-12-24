@@ -18,7 +18,6 @@ namespace Project2.Api.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly IRepositoryAsync<User> _userRepository;
-        private readonly IRepositoryAsync<Course> _courseRepository;
         public UserController(ILogger<UserController> logger, IRepositoryAsync<User> userRepository, IRepositoryAsync<Course> courseRepository)
         {
             _userRepository = userRepository;
