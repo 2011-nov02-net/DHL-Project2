@@ -73,14 +73,14 @@ namespace Project2.Api.Controllers
             }
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User user)
+        public async Task<IActionResult> UpdateUser(int id, string name, string email, int permission)
         {
             try
             {
                 var oldUser = await _userRepository.FindAsync(id);
-                oldUser.FullName = user.FullName;
-                oldUser.Email = user.Email;
-                oldUser.Permission = user.Permission;
+                oldUser.FullName = name;
+                oldUser.Email = email;
+                oldUser.Permission = permission;
                 _userRepository.Update(oldUser);
                 return NoContent();
             }
