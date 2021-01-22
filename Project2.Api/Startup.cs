@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Project2.DataModel;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using Microsoft.EntityFrameworkCore.Query;
 
@@ -84,6 +85,13 @@ namespace Project2.Api
                             .AllowCredentials();
                     });
             });
+
+            services.AddAuthentication(
+                JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+                {
+                    options.Authority = "https://dev-2875280.okta.com/oauth2/default";
+                    options.Audience = "api://default";
+                });
         }
 
         /// <summary>
