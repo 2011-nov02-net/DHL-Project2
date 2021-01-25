@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Project2.Domain.Interfaces;
 
 namespace Project2.Api.Controllers
 {
@@ -15,8 +16,8 @@ namespace Project2.Api.Controllers
     public class BuildingController : ControllerBase
     {
         private readonly ILogger<BuildingController> _logger;
-        private readonly IRepositoryAsync<Building> _buildingRepository;
-        public BuildingController(ILogger<BuildingController> logger, IRepositoryAsync<Building> buildingRepository)
+        private readonly IBuildingRepository _buildingRepository;
+        public BuildingController(ILogger<BuildingController> logger, IBuildingRepository buildingRepository)
         {
             _logger = logger;
             _buildingRepository = buildingRepository;
@@ -26,14 +27,14 @@ namespace Project2.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBuildings()
         {
-            return Ok(await _buildingRepository.ToListAsync());
+            return Ok(await _buildingRepository.GetBuildings());
         }
 
         // GET "api/Building/id"
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBuildingById(int id)
         {
-            if (await _buildingRepository.FindAsync(id) is Building buildingItem)
+            if (await _buildingRepository.GetBuilding(id) is Domain.Models.Building buildingItem)
             {
                 return Ok(buildingItem);
             }
@@ -44,10 +45,9 @@ namespace Project2.Api.Controllers
         [HttpGet("{id}/room")]
         public async Task<IActionResult> GetRoomsByBuildingId(int id)
         {
-            if (await _buildingRepository.FindAsync(id) is Building building)
+            if (await _buildingRepository.GetRoomsByBuilding(id) is List<Domain.Models.Room> rooms)
             {
-                var buildingRooms = building.Rooms.ToList();
-                return Ok(buildingRooms);
+                return Ok(rooms);
             }
             return NotFound();
         }
@@ -58,8 +58,7 @@ namespace Project2.Api.Controllers
         {
             try 
             {
-                if (await _buildingRepository.FindAsync(id) is Building building && 
-                    building.Rooms.FirstOrDefault(r => r.Id == roomId) is Room room)
+                if (await _buildingRepository.GetRoomWithIdAndBuilding(id, roomId) is Domain.Models.Room room)
                 {
                     return Ok(room);
                 }
@@ -78,12 +77,12 @@ namespace Project2.Api.Controllers
         {
             try
             {
-                var building = await _buildingRepository.FindAsync(id);
-                if (await building.Rooms.AsQueryable().FirstOrDefaultAsync(r => r.Id == roomId) is Room room)
+                var room = await _buildingRepository.GetRoomWithIdAndBuilding(id, roomId);
+                if (room != null)
                 {
                     //update the room
                     room.Capacity = capacity;
-                    await _buildingRepository.UpdateAsync(building);
+                    await _buildingRepository.UpdateBuildingRoom(id, roomId, capacity);
                     return Ok();
                 }
                 return NotFound();
@@ -101,10 +100,9 @@ namespace Project2.Api.Controllers
         {
             try
             {
-                var building = await _buildingRepository.FindAsync(buildingId);
-                var room = new Room { Number = number, Capacity = capacity, BuildingId = buildingId };
-                building.Rooms.Add(room);
-                await _buildingRepository.UpdateAsync(building);
+                await _buildingRepository.AddRoomToBuilding(buildingId, number, capacity);
+                var rooms = await _buildingRepository.GetRoomsByBuilding(buildingId);
+                var room = rooms.FirstOrDefault(x => x.Number == number);
                 return Created($"api/Building/{buildingId}/room/{room.Id}", room);
             }
             catch (Exception e)
@@ -116,13 +114,13 @@ namespace Project2.Api.Controllers
 
         // POST "api/Building"
         [HttpPost]
-        public async Task<IActionResult> CreateBuilding(string name)
+        public async Task<IActionResult> CreateBuilding([FromForm]string name)
         {
             try
             {
                 var building = new Building { Name = name };
 
-                await _buildingRepository.AddAsync(building);
+                await _buildingRepository.AddBuilding(name);
 
                 return Ok();
             }
@@ -142,12 +140,12 @@ namespace Project2.Api.Controllers
         {
             try
             {
-                var buildingToEdit = await _buildingRepository.FindAsync(id);
+                var buildingToEdit = await _buildingRepository.GetBuilding(id);
 
                 buildingToEdit.Name = building.Name;
-                buildingToEdit.Rooms = building.Rooms;
+                //buildingToEdit.Rooms = building.Rooms;
 
-                await _buildingRepository.UpdateAsync(buildingToEdit);
+                await _buildingRepository.UpdateBuilding(id, buildingToEdit);
 
                 return NoContent();
             }
@@ -164,21 +162,11 @@ namespace Project2.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBuilding(int id)
         {
-            if (await _buildingRepository.FindAsync(id) is Building building)
+            if (await _buildingRepository.GetBuilding(id) is Domain.Models.Building building)
             {
-                await _buildingRepository.RemoveAsync(building);
+                await _buildingRepository.DeleteBuilding(id);
 
                 return Ok();
-            }
-            return NotFound();
-        }
-        // GET "api/Buidling/id/Room"
-        [HttpGet("{id}/Room")]
-        public async Task<IActionResult> GetBuidlingRooms(int id)
-        {
-            if (await _buildingRepository.FindAsync(id) is Building buidling)
-            {
-                return Ok(buidling.Rooms);  
             }
             return NotFound();
         }
@@ -189,17 +177,7 @@ namespace Project2.Api.Controllers
         {
             try
             {
-                if (await _buildingRepository.FindAsync(id) is Building buidling)
-                {
-                    if (await buidling.Rooms.AsQueryable()
-                        .FirstOrDefaultAsync(r => r.Id == roomId) is Room room)
-                    {
-                        buidling.Rooms.Remove(room);
-                        await _buildingRepository.UpdateAsync(buidling);
-                        return Ok(); 
-                    }
-                    return NotFound();
-                }
+                await _buildingRepository.DeleteBuildingRoom(id, roomId);
                 return NotFound();
             }
             catch (Exception e)

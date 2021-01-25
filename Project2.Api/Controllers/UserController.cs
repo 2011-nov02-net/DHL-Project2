@@ -26,7 +26,8 @@ namespace Project2.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _userRepository.ToListAsync());
+            //return Ok(await _userRepository.ToListAsync());
+            return Ok();
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
@@ -46,8 +47,8 @@ namespace Project2.Api.Controllers
         [HttpGet("find/{email}")]
         public async Task<IActionResult> GetUser(string email)
         {
-            if (await _userRepository.FirstOrDefaultAsync(u => u.Email == email)
-                is User user) return Ok(user);
+            //if (await _userRepository.FirstOrDefaultAsync(u => u.Email == email)
+            //    is User user) return Ok(user);
             return NotFound();
 
         }

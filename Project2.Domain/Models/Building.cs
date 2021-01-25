@@ -30,7 +30,7 @@ namespace Project2.Domain.Models
             }
         }
 
-        public ICollection<Room> Rooms { get; set; } = null;
+        public List<Room> Rooms { get; set; } = null;
 
         public Building(int id, string name)
         {
@@ -38,7 +38,7 @@ namespace Project2.Domain.Models
             Name = name;
         }
 
-        public Building(int id, string name, ICollection<Room> rooms)
+        public Building(int id, string name, List<Room> rooms)
         {
             Id = id;
             Name = name;

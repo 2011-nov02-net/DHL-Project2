@@ -25,7 +25,8 @@ namespace Project2.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDepartments()
         {
-            return Ok(await _departmentRepository.ToListAsync());
+            //return Ok(await _departmentRepository.ToListAsync());
+            return Ok();
         }
 
         [HttpGet("{id}")]
