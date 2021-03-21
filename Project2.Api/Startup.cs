@@ -10,8 +10,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Project2.DataModel;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Project2.Domain.Interfaces;
+using Project2.DataModel.Repositories;
+using Microsoft.OpenApi.Models;
 
 using Microsoft.EntityFrameworkCore.Query;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Project2.Api
 {
@@ -32,6 +37,8 @@ namespace Project2.Api
         {
             services.AddDbContext<DHLProject2SchoolContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Project2connection")));
+
+            services.AddTransient<IBuildingRepository, BuildingRepository>();
             
             services.AddTransient<IRepositoryAsync<User>, Repository<User>>(serviceProvider =>
                 new Repository<User>(
@@ -84,6 +91,18 @@ namespace Project2.Api
                             .AllowCredentials();
                     });
             });
+
+            services.AddAuthentication(
+                JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+                {
+                    options.Authority = "https://dev-2875280.okta.com/oauth2/default";
+                    options.Audience = "api://default";
+                });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            });
         }
 
         /// <summary>
@@ -91,7 +110,12 @@ namespace Project2.Api
         /// </summary>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fakebook.ProfileRestApi v1"));
+            }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

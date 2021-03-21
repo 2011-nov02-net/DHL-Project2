@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project2.Api", "Project2.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project2", "Project2\Project2.csproj", "{F806C157-A62E-4543-AF28-E240199914BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project2.Api.Test", "Project2.Api.Test\Project2.Api.Test.csproj", "{E269523E-8EF4-4071-8AEE-B0544E1C55E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project2.Api.Test", "Project2.Api.Test\Project2.Api.Test.csproj", "{E269523E-8EF4-4071-8AEE-B0544E1C55E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project2.DataModel.Test", "Project2.DataModel.Test\Project2.DataModel.Test.csproj", "{FD09C176-360A-49FB-8ABB-300455080C29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project2.DataModel.Test", "Project2.DataModel.Test\Project2.DataModel.Test.csproj", "{FD09C176-360A-49FB-8ABB-300455080C29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project2.Domain", "Project2.Domain\Project2.Domain.csproj", "{A97F229E-04F4-4EDB-9093-119B3EBF899B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +85,18 @@ Global
 		{FD09C176-360A-49FB-8ABB-300455080C29}.Release|x64.Build.0 = Release|Any CPU
 		{FD09C176-360A-49FB-8ABB-300455080C29}.Release|x86.ActiveCfg = Release|Any CPU
 		{FD09C176-360A-49FB-8ABB-300455080C29}.Release|x86.Build.0 = Release|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Debug|x64.Build.0 = Debug|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Debug|x86.Build.0 = Debug|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Release|x64.ActiveCfg = Release|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Release|x64.Build.0 = Release|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Release|x86.ActiveCfg = Release|Any CPU
+		{A97F229E-04F4-4EDB-9093-119B3EBF899B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

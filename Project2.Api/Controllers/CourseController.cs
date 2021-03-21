@@ -26,7 +26,8 @@ namespace Project2.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCourses()
         {
-            return Ok(await _courseRepository.ToListAsync());
+            //return Ok(await _courseRepository.ToListAsync());
+            return Ok();
         }
 
         // GET "api/Course/id"
@@ -155,9 +156,10 @@ namespace Project2.Api.Controllers
         [HttpGet("instructor/{instructorId}")]
         public async Task<IActionResult> GetCoursesWithInstructorById(int instructorId)
         {
-            var courses = await _courseRepository.Where(course => course.Instructors
-                .Select(x => x.InstructorId).Contains(instructorId)).ToListAsync();
-            return Ok(courses);
+            //var courses = await _courseRepository.Where(course => course.Instructors
+            //    .Select(x => x.InstructorId).Contains(instructorId)).ToListAsync();
+            //return Ok(courses);
+            return Ok();
         }
         [HttpGet("{id}/enrollment")]
         public async Task<IActionResult> GetCourseEnrollmentById(int id)
